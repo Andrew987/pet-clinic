@@ -1,6 +1,7 @@
 package guru.springframework.petclinic.bootstrap;
 
 import guru.springframework.petclinic.model.Owner;
+import guru.springframework.petclinic.model.Pet;
 import guru.springframework.petclinic.model.PetType;
 import guru.springframework.petclinic.model.Vet;
 import guru.springframework.petclinic.services.OwnerService;
@@ -8,6 +9,8 @@ import guru.springframework.petclinic.services.PetTypeService;
 import guru.springframework.petclinic.services.VetService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -25,27 +28,49 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        PetType dog = new PetType();
-        dog.setName("Barky");
-        PetType savedDogPetType = petTypeService.save(dog);
+        PetType dogType = new PetType();
+        dogType.setName("Dog");
+        petTypeService.save(dogType);
 
-        PetType parrot = new PetType();
-        dog.setName("Raaaa");
-        PetType savedParrotPetType = petTypeService.save(parrot);
+        PetType parrotType = new PetType();
+        dogType.setName("Parrot");
+        petTypeService.save(parrotType);
+
+        System.out.println("Loaded Pet Types ...");
+
+        Pet dog = new Pet();
+        dog.setName("Barky");
+        dog.setPetType(dogType);
+        dog.setBirthDate(LocalDate.now());
+
+        Pet parrot = new Pet();
+        parrot.setName("Raaa");
+        parrot.setPetType(parrotType);
+        parrot.setBirthDate(LocalDate.now());
+
+        System.out.println("Created Pets ...");
 
         Owner owner1 = new Owner();
         owner1.setFirstName("Michael");
         owner1.setLastName("Weston");
-
+        owner1.setAddress("123 Brickerel");
+        owner1.setCity("Miami");
+        owner1.setTelephone("12345689");
+        owner1.getPets().add(dog);
+        dog.setOwner(owner1);
         ownerService.save(owner1);
 
         Owner owner2 = new Owner();
         owner2.setFirstName("Fiona");
         owner2.setLastName("Glenanne");
-
+        owner2.setAddress("Gemuse Strasse 7");
+        owner2.setCity("Berlin");
+        owner2.setTelephone("98765455");
+        owner2.getPets().add(parrot);
+        parrot.setOwner(owner2);
         ownerService.save(owner2);
 
-        System.out.println("Loaded Owners ...");
+        System.out.println("Loaded Owners with their Pets...");
 
         Vet vet1 = new Vet();
         vet1.setFirstName("Sam");
