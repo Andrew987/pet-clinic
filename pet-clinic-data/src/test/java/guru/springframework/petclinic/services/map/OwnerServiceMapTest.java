@@ -4,13 +4,15 @@ import guru.springframework.petclinic.model.Owner;
 import guru.springframework.petclinic.services.PetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class OwnerServiceMapTest {
 
     @Mock
@@ -22,7 +24,6 @@ class OwnerServiceMapTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
         ownerServiceMap = new OwnerServiceMap(petService);
         ownerServiceMap.save(createTestOwner(testId, testLastName));
     }
