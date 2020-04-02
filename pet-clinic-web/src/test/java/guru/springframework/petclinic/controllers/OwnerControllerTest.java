@@ -33,11 +33,15 @@ class OwnerControllerTest {
     MockMvc mockMvc;
 
     Set<Owner> testOwners;
+    Owner testOwner;
 
     @BeforeEach
     void setUp() {
+        testOwner = new Owner();
+        testOwner.setId(1L);
+
         testOwners = new HashSet<>();
-        testOwners.add(new Owner());
+        testOwners.add(testOwner);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
@@ -61,5 +65,16 @@ class OwnerControllerTest {
                 .andExpect(view().name("notImplemented"));
 
         verifyNoInteractions(ownerService);
+    }
+
+    @Test
+    void displayOwner() throws Exception {
+        when(ownerService.findById(testOwner.getId())).thenReturn(testOwner);
+
+        mockMvc.perform(get("/owners/" + testOwner.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/ownerDetails"))
+                .andExpect(model().attribute("owner", testOwner));
+
     }
 }
