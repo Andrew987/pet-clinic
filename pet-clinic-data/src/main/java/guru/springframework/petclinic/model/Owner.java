@@ -35,4 +35,21 @@ public class Owner extends Person {
         this.city = city;
         this.telephone = telephone;
     }
+
+    public Pet getPet(String name) {
+        return getPet(name, false);
+    }
+
+
+    public Pet getPet(String name, boolean ignoreNew) {
+        for (Pet pet : pets) {
+            if (!ignoreNew || !pet.isNew()) {
+                String petName = pet.getName();
+                if (petName.toLowerCase().equals(name.toLowerCase())) {
+                    return pet;
+                }
+            }
+        }
+        return null;
+    }
 }
