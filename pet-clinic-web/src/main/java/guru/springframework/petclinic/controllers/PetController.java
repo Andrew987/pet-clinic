@@ -15,6 +15,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Controller
@@ -44,8 +46,15 @@ public class PetController {
     }
 
     @InitBinder
-    public void initOwnerBinder(WebDataBinder dataBinder) {
+    public void dataBinder(WebDataBinder dataBinder) {
         dataBinder.setDisallowedFields("id");
+
+        dataBinder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException{
+                setValue(LocalDate.parse(text));
+            }
+        });
     }
 
     @GetMapping("/pets/new")
@@ -62,6 +71,7 @@ public class PetController {
             result.rejectValue("name", "duplicate", "already exists");
         }
         if (result.hasErrors()) {
+            pet.setOwner(owner);
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
@@ -81,7 +91,7 @@ public class PetController {
     @PostMapping("/pets/{petId}/edit")
     public String processUpdateForm(@Valid Pet pet, @PathVariable Long petId, BindingResult result, Owner owner, Model model) {
         if (result.hasErrors()) {
-            //pet.setOwner(owner);
+            pet.setOwner(owner);
             model.addAttribute("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
